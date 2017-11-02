@@ -9,7 +9,7 @@ class App extends React.Component {
 
         this.state = {
             posts: [],
-            editVenueId: ""
+            editVenue: ""
         };
 
 
@@ -18,7 +18,7 @@ class App extends React.Component {
 
     }
     updateEditId(x) {
-        this.setState({editVenueId: x}, function () {
+        this.setState(x, function () {
             console.log(this.state.editVenueId)
         })
     }
@@ -53,7 +53,7 @@ class App extends React.Component {
                     </li>
                 </ul>
                 <CreateVenue xyz={this.updateList}></CreateVenue>
-                <EditVenue venueId={this.state.editVenueId}></EditVenue>
+                <EditVenue venue={this.state.editVenue}></EditVenue>
 
              </div>
         );
@@ -76,7 +76,7 @@ class TableRow extends React.Component {
         this.editFormSetState = this.editFormSetState.bind(this);
     }
 
-    editFormSetState(e){ this.props.updateEditId(this.props.data._id);
+    editFormSetState(e){ this.props.updateEditId(this.props.data);
         console.log(e.target.value);
     }
 
@@ -183,7 +183,7 @@ class EditVenue extends React.Component {
             <div>
                 <form>
                     Name:
-                    <input type="text" onChange={this.updateStateName}/><br/>
+                    <input type="text" defaultValue={this.props.venue.name} onChange={this.updateStateName}/><br/>
                     <input type="text" onClick={this.updateVenue}/>
                 </form>
                 <Button onClick={this.updateVenue}>Update</Button>
