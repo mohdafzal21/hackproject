@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Button from 'material-ui/Button';
+import TextField from 'material-ui/TextField';
 import { render } from 'react-dom';
 
 class App extends React.Component {
@@ -19,7 +20,8 @@ class App extends React.Component {
     }
     updateEditId(x) {
         this.setState(x, function () {
-            console.log(this.state.editVenueId)
+            // console.log(this.state.editVenueId)
+            this.setState({editVenue:x})
         })
     }
 
@@ -48,12 +50,12 @@ class App extends React.Component {
         return (
             <div>
                 <ul>
-                    <li>
+
                         {this.state.posts.map((venue, i) => <TableRow key={i} data={venue} updateEditId={this.updateEditId}/>)}
-                    </li>
+
                 </ul>
                 <CreateVenue xyz={this.updateList}></CreateVenue>
-                <EditVenue venue={this.state.editVenue}></EditVenue>
+                <EditVenue venue={this.state.editVenue} xyz={this.updateList}></EditVenue>
 
              </div>
         );
@@ -77,30 +79,14 @@ class TableRow extends React.Component {
     }
 
     editFormSetState(e){ this.props.updateEditId(this.props.data);
-        console.log(e.target.value);
+        // console.log(e.target.value);
     }
 
     render() {
         return (
-            /*<table>
-                <tr>
-                    <th>name</th>
-                    <th>email</th>
-
-                </tr>
-                <tr>
-                    <td>{this.props.data.name}</td>
-                    <td>{this.props.data.email}</td>
-                    <div>
-
-                    </div>
-
-                 </tr>
-
-             </table>*/
 
         <li>
-            <div>{this.props.data.name}<br/>
+            <div>{this.props.data.email}<br/>
                 {this.props.data._id}</div>
             <Button value={this.props.data._id} onClick={this.editFormSetState}>Edit</Button>
         </li>
@@ -154,9 +140,8 @@ class EditVenue extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name:"",
-            address:"",
-            email:""
+            email:"",
+            name:""
         };
         this.updateStateName = this.updateStateName.bind(this);
         this.updateStateAddress = this.updateStateAddress.bind(this);
@@ -164,7 +149,16 @@ class EditVenue extends React.Component {
         this.updateVenue = this.updateVenue.bind(this)
     }
     updateVenue(){
-        // axios.post()
+
+        console.log(this.props.venue)
+        var id=this.props.venue._id
+        axios.post('/api/venueEdit/'+id,{email:this.state.email})
+            .then(res => {
+                this.props.xyz()
+            }
+
+
+        )
     }
     updateStateName(e){
         console.log(this.props)
@@ -177,16 +171,19 @@ class EditVenue extends React.Component {
     }
     updateStateEmail(e){
         this.setState({email:e.target.value})
+        console.log(e.target.value)
+
     }
     render() {
         return(
             <div>
                 <form>
                     Name:
-                    <input type="text" defaultValue={this.props.venue.name} onChange={this.updateStateName}/><br/>
-                    <input type="text" onClick={this.updateVenue}/>
+                    <input type="text" onChange={this.updateStateEmail}/><br/>
+                    {/*<input type="text" onClick={this.updateVenue}/>*/}
+                    <Button onClick={this.updateVenue}>Update</Button>
                 </form>
-                <Button onClick={this.updateVenue}>Update</Button>
+
             </div>
         )
     }
